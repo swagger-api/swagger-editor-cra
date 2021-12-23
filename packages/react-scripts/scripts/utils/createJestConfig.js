@@ -19,7 +19,7 @@ module.exports = (resolve, rootDir, isEjecting) => {
   const setupTestsFileExtension =
     (setupTestsMatches && setupTestsMatches[1]) || 'js';
   const setupTestsFile = fs.existsSync(paths.testsSetup)
-    ? `<rootDir>/src/setupTests.${setupTestsFileExtension}`
+    ? `<rootDir>/test/setupTests.${setupTestsFileExtension}`
     : undefined;
 
   const config = {
@@ -117,7 +117,7 @@ module.exports = (resolve, rootDir, isEjecting) => {
               chalk.bold('setupFilesAfterEnv') +
               ' in your package.json.\n\n' +
               'Remove it from Jest configuration, and put the initialization code in ' +
-              chalk.bold('src/setupTests.js') +
+              chalk.bold('test/setupTests.js') +
               '.\nThis file will be loaded automatically.\n'
           )
         );

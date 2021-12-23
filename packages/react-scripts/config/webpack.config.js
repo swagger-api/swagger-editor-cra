@@ -343,6 +343,14 @@ module.exports = function (webpackEnv) {
           babelRuntimeRegenerator,
         ]),
       ],
+      fallback: {
+        fs: false,
+        http: false,
+        https: false,
+        path: false,
+        stream: require.resolve('stream-browserify'),
+        util: false,
+      },
     },
     module: {
       strictExportPresence: true,
@@ -350,7 +358,16 @@ module.exports = function (webpackEnv) {
         // Handle node_modules packages that contain sourcemaps
         shouldUseSourceMap && {
           enforce: 'pre',
-          exclude: /@babel(?:\/|\\{1,2})runtime/,
+          exclude: [
+            /@babel(?:\/|\\{1,2})runtime/,
+            // vscode-* references source map files that are missing from npm packages
+            /vscode-languageserver-protocol/,
+            /vscode-jsonrpc/,
+            /unraw/,
+            /@asyncapi\/react-component/,
+            /swagger-ui-react/,
+            /@jsdevtools\/ono/,
+          ],
           test: /\.(js|mjs|jsx|ts|tsx|css)$/,
           loader: require.resolve('source-map-loader'),
         },
@@ -786,6 +803,10 @@ module.exports = function (webpackEnv) {
             },
           },
         }),
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+        Buffer: ['buffer', 'Buffer'],
+      }),
     ].filter(Boolean),
     // Turn off performance processing because we utilize
     // our own hints via the FileSizeReporter
