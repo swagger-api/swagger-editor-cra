@@ -22,12 +22,14 @@ process.on('unhandledRejection', err => {
 // Ensure environment variables are read.
 require('../config/env');
 
-const path = require('path');
 const chalk = require('react-dev-utils/chalk');
-const fs = require('fs-extra');
 const bfj = require('bfj');
 const webpack = require('webpack');
-const configFactory = require('../config/webpack.config.bundle');
+const configFactory = process.env.BUILD_UMD_BUNDLE === 'true'
+  ? require('../config/webpack.config.bundle.umd')
+  : process.env.BUILD_ESM_BUNDLE === 'true'
+  ? require('../config/webpack.config.bundle.esm')
+  : require('../config/webpack.config.bundle.esm');
 const paths = require('../config/paths');
 const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
@@ -37,7 +39,6 @@ const printBuildError = require('react-dev-utils/printBuildError');
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;
 const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
-const useYarn = fs.existsSync(paths.yarnLockFile);
 
 // These sizes are pretty large. We'll warn for bundles exceeding them.
 const WARN_AFTER_BUNDLE_GZIP_SIZE = 512 * 1024;

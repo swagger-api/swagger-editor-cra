@@ -31,7 +31,7 @@ const publicUrlOrPath = getPublicUrlOrPath(
 
 const buildPath = process.env.BUILD_PATH || 'build';
 const distPath = process.env.DIST_PATH || 'dist';
-const isBuildingBundle = process.env.BUILD_ESM_BUNDLE === 'true';
+const isBuildingBundle = process.env.BUILD_ESM_BUNDLE === 'true' || process.env.BUILD_UMD_BUNDLE === 'true';
 
 const moduleFileExtensions = [
   'web.mjs',
