@@ -1,5 +1,6 @@
 'use strict';
 
+const path = require('path');
 const webpack = require('webpack');
 
 const paths = require('./paths');
@@ -8,9 +9,16 @@ const configFactory = require('./webpack.config');
 module.exports = function (webpackEnv) {
   const config = configFactory(webpackEnv)
   const shouldProduceCompactBundle = process.env.REACT_APP_COMPACT_BUNDLE !== 'false';
+  const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
+  const oneOfRuleIndex = shouldUseSourceMap ? 1 : 0;
 
+  config.entry = {
+    'swagger-ide': paths.appIndexJs,
+    'apidom.worker': path.join(paths.appSrc, 'plugins', 'monaco', 'workers', 'apidom', 'apidom.worker.js'),
+    'editor.worker': path.join(paths.appSrc, 'plugins', 'monaco', 'workers', 'editor.worker.js'),
+  };
   config.output.path = paths.appDist;
-  config.output.filename = 'swagger-ide.js';
+  config.output.filename = '[name].js';
   config.output.libraryTarget = 'umd';
   config.output.library = {
     name: 'SwaggerIDE',
@@ -18,6 +26,9 @@ module.exports = function (webpackEnv) {
     export: 'default',
   };
   config.output.globalObject = 'globalThis';
+  delete config.output.chunkFilename;
+  delete config.output.assetModuleFilename;
+  config.output.publicPath = '';
   config.experiments = {
     asyncWebAssembly: true,
     syncWebAssembly: true,
@@ -27,9 +38,6 @@ module.exports = function (webpackEnv) {
     ...config.externals,
     'react': 'React',
   }
-  delete config.output.chunkFilename;
-  delete config.output.assetModuleFilename;
-  delete config.output.publicPath;
 
   config.optimization.splitChunks = {
     cacheGroups: {
@@ -44,7 +52,7 @@ module.exports = function (webpackEnv) {
      * This configuration reduces the complexity of WASM file loading
      * but increases the overal bundle size.
      */
-    config.module.rules[0].oneOf.unshift({
+    config.module.rules[oneOfRuleIndex].oneOf.unshift({
       test: /\.wasm$/,
       type: 'asset/inline',
     });
@@ -56,25 +64,14 @@ module.exports = function (webpackEnv) {
      *
      * Resource: https://pspdfkit.com/blog/2020/webassembly-in-a-web-worker/
      */
-    config.module.rules[0].oneOf.unshift({
+    config.module.rules[oneOfRuleIndex].oneOf.unshift({
       test: /\.wasm$/,
       loader: 'file-loader',
       type: 'javascript/auto', // this disables webpacks default handling of wasm
     });
   }
 
-  /**
-   * Native handling of web workers doesn't support inlining.
-   * Unless we use publicPath the worker-loader works well with webpack@5.
-   *
-   * Resource: https://mmazzarolo.com/blog/2021-09-03-loading-web-workers-using-webpack-5/
-   */
-  const workerRule = config.module.rules[0].oneOf.find((rule) => String(rule.test) === '/\\.worker\\.(c|m)?js$/i')
-  workerRule.use[0].options.inline = 'no-fallback';
-  delete workerRule.use[0].options.filename;
-  delete workerRule.use[0].options.chunkFilename;
-
-  const svgRule = config.module.rules[0].oneOf.find((rule) => String(rule.test) === '/\\.svg$/');
+  const svgRule = config.module.rules[oneOfRuleIndex].oneOf.find((rule) => String(rule.test) === '/\\.svg$/');
   if (shouldProduceCompactBundle) {
     /**
      * We want all SVG files become part of the bundle.
@@ -89,7 +86,7 @@ module.exports = function (webpackEnv) {
     /**
      * We want TTF font from Monaco editor become part of the bundle.
      */
-    config.module.rules[0].oneOf.unshift({
+    config.module.rules[oneOfRuleIndex].oneOf.unshift({
       test: /\.ttf$/,
       type: 'asset/inline',
     });
@@ -113,7 +110,7 @@ module.exports = function (webpackEnv) {
   config.plugins = [
     ...config.plugins,
     new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 1
+      maxChunks: 3
     }),
   ]
 

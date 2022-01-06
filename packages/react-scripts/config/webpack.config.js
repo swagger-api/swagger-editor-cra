@@ -209,7 +209,11 @@ module.exports = function (webpackEnv) {
       : isEnvDevelopment && 'cheap-module-source-map',
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
-    entry: paths.appIndexJs,
+    entry: {
+      main: paths.appIndexJs,
+      'apidom.worker': path.join(paths.appSrc, 'plugins', 'monaco', 'workers', 'apidom', 'apidom.worker.js'),
+      'editor.worker': path.join(paths.appSrc, 'plugins', 'monaco', 'workers', 'editor.worker.js'),
+    },
     externals: {
       esprima: 'esprima',
     },
@@ -221,8 +225,8 @@ module.exports = function (webpackEnv) {
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
       filename: isEnvProduction
-        ? 'static/js/[name].[contenthash:8].js'
-        : isEnvDevelopment && 'static/js/bundle.js',
+        ? 'static/js/[name].js'
+        : isEnvDevelopment && 'static/js/[name].js',
       // There are also additional JS chunk files if you use code splitting.
       chunkFilename: isEnvProduction
         ? 'static/js/[name].[contenthash:8].chunk.js'
@@ -430,74 +434,6 @@ module.exports = function (webpackEnv) {
                 and: [/\.(ts|tsx|js|jsx|md|mdx)$/],
               },
             },
-            // Process Web Workers.
-            {
-              test: /\.worker\.(c|m)?js$/i,
-              exclude: /monaco-editor-core\/esm\/vs\/editor\/editor\.worker/,
-              use: [
-                {
-                  loader: 'worker-loader',
-                  options: {
-                    filename: isEnvProduction
-                      ? 'static/js/[name].[contenthash:8].js'
-                      : isEnvDevelopment && 'static/js/[name].worker.js',
-                    chunkFilename: isEnvProduction
-                      ? 'static/js/[name].[contenthash:8].chunk.js'
-                      : isEnvDevelopment && 'static/js/[name].worker.chunk.js',
-                  }
-                },
-                {
-                  loader: require.resolve('babel-loader'),
-                  options: {
-                    customize: require.resolve(
-                      'babel-preset-react-app/webpack-overrides'
-                    ),
-                    presets: [
-                      [
-                        require.resolve('babel-preset-react-app'),
-                        {
-                          runtime: hasJsxRuntime ? 'automatic' : 'classic',
-                        },
-                      ],
-                    ],
-                    // @remove-on-eject-begin
-                    babelrc: true,
-                    configFile: false,
-                    // Make sure we have a unique cache identifier, erring on the
-                    // side of caution.
-                    // We remove this when the user ejects because the default
-                    // is sane and uses Babel options. Instead of options, we use
-                    // the react-scripts and babel-preset-react-app versions.
-                    cacheIdentifier: getCacheIdentifier(
-                      isEnvProduction
-                        ? 'production'
-                        : isEnvDevelopment && 'development',
-                      [
-                        'babel-plugin-named-asset-import',
-                        'babel-preset-react-app',
-                        'react-dev-utils',
-                        'react-scripts',
-                      ]
-                    ),
-                    // @remove-on-eject-end
-                    plugins: [
-                      isEnvDevelopment &&
-                      shouldUseReactRefresh &&
-                      require.resolve('react-refresh/babel'),
-                    ].filter(Boolean),
-                    // This is a feature of `babel-loader` for webpack (not Babel itself).
-                    // It enables caching results in ./node_modules/.cache/babel-loader/
-                    // directory for faster rebuilds.
-                    cacheDirectory: true,
-                    // See #6846 for context on why cacheCompression is disabled
-                    cacheCompression: false,
-                    compact: isEnvProduction,
-                  },
-                }
-              ]
-            },
-            // Process application JS with Babel.
-            // The preset includes JSX, Flow, TypeScript, and some ESnext features.
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               include: paths.appSrc,
@@ -515,7 +451,7 @@ module.exports = function (webpackEnv) {
                   ],
                 ],
                 // @remove-on-eject-begin
-                babelrc: true,
+                babelrc: false,
                 configFile: false,
                 // Make sure we have a unique cache identifier, erring on the
                 // side of caution.
@@ -555,7 +491,7 @@ module.exports = function (webpackEnv) {
               exclude: /@babel(?:\/|\\{1,2})runtime/,
               loader: require.resolve('babel-loader'),
               options: {
-                babelrc: true,
+                babelrc: false,
                 configFile: false,
                 compact: false,
                 presets: [
@@ -696,6 +632,7 @@ module.exports = function (webpackEnv) {
           {
             inject: true,
             template: paths.appHtml,
+            excludeChunks: ['apidom.worker', 'editor.worker'],
           },
           isEnvProduction
             ? {

@@ -1,5 +1,6 @@
 'use strict';
 
+const path = require('path');
 const paths = require('./paths');
 const configFactory = require('./webpack.config');
 const nodeExternals = require('webpack-node-externals');
@@ -7,14 +8,24 @@ const nodeExternals = require('webpack-node-externals');
 module.exports = function (webpackEnv) {
   const config = configFactory(webpackEnv)
   const shouldProduceCompactBundle = process.env.REACT_APP_COMPACT_BUNDLE !== 'false';
+  const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
+  const oneOfRuleIndex = shouldUseSourceMap ? 1 : 0;
 
+  config.entry = {
+    'swagger-ide': paths.appIndexJs,
+    'apidom.worker': path.join(paths.appSrc, 'plugins', 'monaco', 'workers', 'apidom', 'apidom.worker.js'),
+    'editor.worker': path.join(paths.appSrc, 'plugins', 'monaco', 'workers', 'editor.worker.js'),
+  };
   config.output.path = paths.appDist;
-  config.output.filename = 'swagger-ide.mjs';
+  config.output.filename = '[name].js';
   config.output.module = true;
   config.output.libraryTarget = 'module';
   config.output.library = {
     type: 'module',
   };
+  delete config.output.chunkFilename;
+  delete config.output.assetModuleFilename;
+  config.output.publicPath = '';
   config.experiments = {
     outputModule: true,
     asyncWebAssembly: true,
@@ -27,16 +38,25 @@ module.exports = function (webpackEnv) {
   config.externals = [
     config.externals,
     nodeExternals({
-      importType: 'module',
+      importType: (moduleName) => {
+        if (moduleName === '@asyncapi/react-component') {
+          /**
+           * ideal state: return `import ${moduleName}`;
+           * target needs to be set to es2020, but build fails on swagger-ui-react/swagger-ui.css file.
+           * Need to find route cause and this will allow to code split the AsyncAPI UI React component.
+           */
+          return `module ${moduleName}`;
+        } else if (moduleName === 'react/jsx-runtime') {
+          return `module ${moduleName}.js`;
+        }
+        return `module ${moduleName}`;
+      },
       allowlist: [
         'swagger-ui-react/swagger-ui.css',
         '@asyncapi/react-component/styles/default.min.css'
       ]
     })
   ];
-  delete config.output.chunkFilename;
-  delete config.output.assetModuleFilename;
-  delete config.output.publicPath;
 
   config.optimization.splitChunks = {
     cacheGroups: {
@@ -51,7 +71,7 @@ module.exports = function (webpackEnv) {
      * This configuration reduces the complexity of WASM file loading
      * but increases the overal bundle size.
      */
-    config.module.rules[1].oneOf.unshift({
+    config.module.rules[oneOfRuleIndex].oneOf.unshift({
       test: /\.wasm$/,
       type: 'asset/inline',
     });
@@ -63,25 +83,14 @@ module.exports = function (webpackEnv) {
      *
      * Resource: https://pspdfkit.com/blog/2020/webassembly-in-a-web-worker/
      */
-    config.module.rules[1].oneOf.unshift({
+    config.module.rules[oneOfRuleIndex].oneOf.unshift({
       test: /\.wasm$/,
       loader: 'file-loader',
       type: 'javascript/auto', // this disables webpacks default handling of wasm
     });
   }
 
-  /**
-   * Native handling of web workers doesn't support inlining.
-   * Unless we use publicPath the worker-loader works well with webpack@5.
-   *
-   * Resource: https://mmazzarolo.com/blog/2021-09-03-loading-web-workers-using-webpack-5/
-   */
-  const workerRule = config.module.rules[1].oneOf.find((rule) => String(rule.test) === '/\\.worker\\.(c|m)?js$/i')
-  workerRule.use[0].options.inline = 'no-fallback';
-  delete workerRule.use[0].options.filename;
-  delete workerRule.use[0].options.chunkFilename;
-
-  const svgRule = config.module.rules[1].oneOf.find((rule) => String(rule.test) === '/\\.svg$/');
+  const svgRule = config.module.rules[oneOfRuleIndex].oneOf.find((rule) => String(rule.test) === '/\\.svg$/');
   if (shouldProduceCompactBundle) {
     /**
      * We want all SVG files become part of the bundle.
@@ -96,7 +105,7 @@ module.exports = function (webpackEnv) {
     /**
      * We want TTF font from Monaco editor become part of the bundle.
      */
-    config.module.rules[1].oneOf.unshift({
+    config.module.rules[oneOfRuleIndex].oneOf.unshift({
       test: /\.ttf$/,
       type: 'asset/inline',
     });
