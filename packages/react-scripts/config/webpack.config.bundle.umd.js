@@ -2,29 +2,20 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const { DuplicatesPlugin } = require('inspectpack/plugin');
 
 const paths = require('./paths');
 const configFactory = require('./webpack.config');
 
-module.exports = function (webpackEnv) {
-  const config = configFactory(webpackEnv)
-  const shouldProduceCompactBundle = process.env.REACT_APP_COMPACT_BUNDLE !== 'false';
+const commonConfig = webpackEnv => {
+  const config = configFactory(webpackEnv);
+  const shouldProduceCompactBundle =
+    process.env.REACT_APP_COMPACT_BUNDLE !== 'false';
   const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
   const oneOfRuleIndex = shouldUseSourceMap ? 1 : 0;
 
-  config.entry = {
-    'swagger-ide': paths.appIndexJs,
-    'apidom.worker': path.join(paths.appSrc, 'plugins', 'monaco', 'workers', 'apidom', 'apidom.worker.js'),
-    'editor.worker': path.join(paths.appSrc, 'plugins', 'monaco', 'workers', 'editor.worker.js'),
-  };
   config.output.path = paths.appDist;
   config.output.filename = '[name].js';
-  config.output.libraryTarget = 'umd';
-  config.output.library = {
-    name: 'SwaggerIDE',
-    type: 'umd',
-    export: 'default',
-  };
   config.output.globalObject = 'globalThis';
   delete config.output.chunkFilename;
   delete config.output.assetModuleFilename;
@@ -33,15 +24,10 @@ module.exports = function (webpackEnv) {
     asyncWebAssembly: true,
     syncWebAssembly: true,
   };
-  config.externalsType = 'umd';
-  config.externals = {
-    ...config.externals,
-    'react': 'React',
-  }
 
   config.optimization.splitChunks = {
     cacheGroups: {
-      default: false
+      default: false,
     },
   };
   config.optimization.runtimeChunk = false;
@@ -71,7 +57,9 @@ module.exports = function (webpackEnv) {
     });
   }
 
-  const svgRule = config.module.rules[oneOfRuleIndex].oneOf.find((rule) => String(rule.test) === '/\\.svg$/');
+  const svgRule = config.module.rules[oneOfRuleIndex].oneOf.find(
+    rule => String(rule.test) === '/\\.svg$/'
+  );
   if (shouldProduceCompactBundle) {
     /**
      * We want all SVG files become part of the bundle.
@@ -79,7 +67,7 @@ module.exports = function (webpackEnv) {
     svgRule.type = 'asset/inline';
     svgRule.use.pop();
   } else {
-    svgRule.use[1].options.name = '[name].[hash].[ext]'
+    svgRule.use[1].options.name = '[name].[hash].[ext]';
   }
 
   if (shouldProduceCompactBundle) {
@@ -95,24 +83,119 @@ module.exports = function (webpackEnv) {
   /**
    * We want to have deterministic name for our CSS bundle.
    */
-  const miniCssExtractPlugin = config.plugins.find((plugin) => plugin.constructor.name === 'MiniCssExtractPlugin');
+  const miniCssExtractPlugin = config.plugins.find(
+    plugin => plugin.constructor.name === 'MiniCssExtractPlugin'
+  );
   miniCssExtractPlugin.options.filename = 'swagger-ide.css';
 
-  config.plugins = config.plugins.filter((plugin) => ![
-    'HtmlWebpackPlugin',
-    'InlineChunkHtmlPlugin',
-    'InterpolateHtmlPlugin',
-    'ReactRefreshWebpackPlugin',
-    'WebpackManifestPlugin',
-    'WorkboxWebpackPlugin'
-  ].includes(plugin.constructor.name));
+  config.plugins = config.plugins.filter(
+    plugin =>
+      ![
+        'HtmlWebpackPlugin',
+        'InlineChunkHtmlPlugin',
+        'InterpolateHtmlPlugin',
+        'ReactRefreshWebpackPlugin',
+        'WebpackManifestPlugin',
+        'WorkboxWebpackPlugin',
+      ].includes(plugin.constructor.name)
+  );
 
   config.plugins = [
     ...config.plugins,
     new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 3
+      maxChunks: 1,
     }),
-  ]
+  ];
 
   return config;
+};
+
+const swaggerIDEConfig = (webpackEnv) => {
+  const config = commonConfig(webpackEnv);
+
+  config.output.libraryTarget = 'umd';
+  config.output.library = {
+    name: 'SwaggerIDE',
+    type: 'umd',
+    export: 'default',
+  };
+  config.externalsType = 'umd';
+  config.externals = {
+    ...config.externals,
+    react: 'React',
+  };
+
+  config.entry = {
+    'swagger-ide': paths.appIndexJs,
+  };
+
+  config.resolve.alias = {
+    ...config.resolve.alias,
+    'react-is': path.resolve(paths.appNodeModules, 'react-is'),
+    dompurify: path.resolve(paths.appNodeModules, 'dompurify'),
+    'json-schema-traverse': path.resolve(paths.appNodeModules, '@swagger-api', 'apidom-ls', 'node_modules', 'json-schema-traverse'),
+    '@babel/runtime': path.resolve(paths.appNodeModules, '@babel', 'runtime'),
+  };
+
+  config.plugins = [
+    ...config.plugins,
+    new DuplicatesPlugin({
+      emitErrors: false,
+      emitHandler: () => {}, // remove this line to see the actual analysis result
+      verbose: false,
+      ignoredPackages: ['js-yaml'],
+    }),
+  ];
+
+  return config;
+};
+
+const apidomWorkerConfig = (webpackEnv) => {
+  const config = commonConfig(webpackEnv);
+
+  config.entry = {
+    'apidom.worker': path.join(paths.appSrc,'plugins', 'monaco', 'workers', 'apidom', 'apidom.worker.js'),
+  };
+
+  config.resolve.alias = {
+    ...config.resolve.alias,
+    'json-schema-traverse': path.resolve(paths.appNodeModules, '@swagger-api', 'apidom-ls', 'node_modules', 'json-schema-traverse'),
+    ajv: path.join(paths.appNodeModules, '@swagger-api', 'apidom-ls', 'node_modules', 'ajv'),
+  };
+
+  config.plugins = [
+    ...config.plugins,
+    new DuplicatesPlugin({
+      emitErrors: true,
+      verbose: false,
+    }),
+  ];
+
+  return config;
+};
+
+const editorWorkerConfig = (webpackEnv) => {
+  const config = commonConfig(webpackEnv);
+
+  config.entry = {
+    'editor.worker': path.join(paths.appSrc,'plugins', 'monaco', 'workers', 'editor.worker.js'),
+  };
+
+  config.plugins = [
+    ...config.plugins,
+    new DuplicatesPlugin({
+      emitErrors: true,
+      verbose: false,
+    }),
+  ];
+
+  return config;
+};
+
+module.exports = function (webpackEnv) {
+  return [
+    swaggerIDEConfig(webpackEnv),
+    apidomWorkerConfig(webpackEnv),
+    editorWorkerConfig(webpackEnv),
+  ];
 };
