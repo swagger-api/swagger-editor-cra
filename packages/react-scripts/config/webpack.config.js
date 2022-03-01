@@ -211,8 +211,8 @@ module.exports = function (webpackEnv) {
     // This means they will be the "root" imports that are included in JS bundle.
     entry: {
       main: paths.appIndexJs,
-      'apidom.worker': path.join(paths.appSrc, 'plugins', 'monaco', 'workers', 'apidom', 'apidom.worker.js'),
-      'editor.worker': path.join(paths.appSrc, 'plugins', 'monaco', 'workers', 'editor.worker.js'),
+      'apidom.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'apidom', 'apidom.worker.js'),
+      'editor.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'editor.worker.js'),
     },
     externals: {
       esprima: 'esprima',

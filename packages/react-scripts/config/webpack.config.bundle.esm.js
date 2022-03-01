@@ -13,8 +13,8 @@ module.exports = function (webpackEnv) {
 
   config.entry = {
     'swagger-ide': paths.appIndexJs,
-    'apidom.worker': path.join(paths.appSrc, 'plugins', 'monaco', 'workers', 'apidom', 'apidom.worker.js'),
-    'editor.worker': path.join(paths.appSrc, 'plugins', 'monaco', 'workers', 'editor.worker.js'),
+    'apidom.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'apidom', 'apidom.worker.js'),
+    'editor.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'editor.worker.js'),
   };
   config.output.path = paths.appDist;
   config.output.filename = '[name].js';

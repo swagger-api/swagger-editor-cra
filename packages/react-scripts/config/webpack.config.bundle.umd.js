@@ -154,7 +154,7 @@ const apidomWorkerConfig = (webpackEnv) => {
   const config = commonConfig(webpackEnv);
 
   config.entry = {
-    'apidom.worker': path.join(paths.appSrc,'plugins', 'monaco', 'workers', 'apidom', 'apidom.worker.js'),
+    'apidom.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'apidom', 'apidom.worker.js'),
   };
 
   config.resolve.alias = {
@@ -178,7 +178,7 @@ const editorWorkerConfig = (webpackEnv) => {
   const config = commonConfig(webpackEnv);
 
   config.entry = {
-    'editor.worker': path.join(paths.appSrc,'plugins', 'monaco', 'workers', 'editor.worker.js'),
+    'editor.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'editor.worker.js'),
   };
 
   config.plugins = [
