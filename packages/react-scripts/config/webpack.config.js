@@ -354,12 +354,15 @@ module.exports = function (webpackEnv) {
         ]),
       ],
       fallback: {
+        os: false,
         fs: false,
-        http: false,
-        https: false,
+        http: require.resolve('stream-http'), // required for asyncapi parser
+        https: require.resolve('https-browserify'), // required for asyncapi parser
         path: false,
         stream: require.resolve('stream-browserify'),
-        util: false,
+        util: require.resolve('util'),
+        zlib: false,
+        assert: false,
       },
     },
     module: {
