@@ -377,6 +377,7 @@ module.exports = function (webpackEnv) {
             /vscode-languageserver-protocol/,
             /vscode-jsonrpc/,
             /unraw/,
+            /swagger-ui-react/,
             /webapi-parser/,
             /@jsdevtools\/ono/,
           ],
