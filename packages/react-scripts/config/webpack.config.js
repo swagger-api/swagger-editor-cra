@@ -354,15 +354,13 @@ module.exports = function (webpackEnv) {
         ]),
       ],
       fallback: {
-        os: false,
+        path: false,
         fs: false,
         http: require.resolve('stream-http'), // required for asyncapi parser
         https: require.resolve('https-browserify'), // required for asyncapi parser
-        path: false,
         stream: require.resolve('stream-browserify'),
         util: require.resolve('util'),
         zlib: false,
-        assert: false,
       },
     },
     module: {
@@ -373,12 +371,9 @@ module.exports = function (webpackEnv) {
           enforce: 'pre',
           exclude: [
             /@babel(?:\/|\\{1,2})runtime/,
-            // vscode-* references source map files that are missing from npm packages
             /vscode-languageserver-protocol/,
             /vscode-jsonrpc/,
             /unraw/,
-            /swagger-ui-react/,
-            /webapi-parser/,
             /@jsdevtools\/ono/,
           ],
           test: /\.(js|mjs|jsx|ts|tsx|css)$/,
