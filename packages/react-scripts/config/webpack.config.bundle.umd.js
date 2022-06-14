@@ -86,7 +86,7 @@ const commonConfig = webpackEnv => {
   const miniCssExtractPlugin = config.plugins.find(
     plugin => plugin.constructor.name === 'MiniCssExtractPlugin'
   );
-  miniCssExtractPlugin.options.filename = 'swagger-ide.css';
+  miniCssExtractPlugin.options.filename = 'swagger-editor.css';
 
   config.plugins = config.plugins.filter(
     plugin =>
@@ -110,12 +110,12 @@ const commonConfig = webpackEnv => {
   return config;
 };
 
-const swaggerIDEConfig = (webpackEnv) => {
+const swaggerEditorConfig = (webpackEnv) => {
   const config = commonConfig(webpackEnv);
 
   config.output.libraryTarget = 'umd';
   config.output.library = {
-    name: 'SwaggerIDE',
+    name: 'SwaggerEditor',
     type: 'umd',
     export: 'default',
   };
@@ -126,7 +126,7 @@ const swaggerIDEConfig = (webpackEnv) => {
   };
 
   config.entry = {
-    'swagger-ide': paths.appIndexJs,
+    'swagger-editor': paths.appIndexJs,
   };
 
   config.resolve.alias = {
@@ -194,7 +194,7 @@ const editorWorkerConfig = (webpackEnv) => {
 
 module.exports = function (webpackEnv) {
   return [
-    swaggerIDEConfig(webpackEnv),
+    swaggerEditorConfig(webpackEnv),
     apidomWorkerConfig(webpackEnv),
     editorWorkerConfig(webpackEnv),
   ];

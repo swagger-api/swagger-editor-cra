@@ -12,7 +12,7 @@ module.exports = function (webpackEnv) {
   const oneOfRuleIndex = shouldUseSourceMap ? 1 : 0;
 
   config.entry = {
-    'swagger-ide': paths.appIndexJs,
+    'swagger-editor': paths.appIndexJs,
     'apidom.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'apidom', 'apidom.worker.js'),
     'editor.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'editor.worker.js'),
   };
@@ -115,7 +115,7 @@ module.exports = function (webpackEnv) {
    * We want to have deterministic name for our CSS bundle.
    */
   const miniCssExtractPlugin = config.plugins.find((plugin) => plugin.constructor.name === 'MiniCssExtractPlugin');
-  miniCssExtractPlugin.options.filename = 'swagger-ide.css';
+  miniCssExtractPlugin.options.filename = 'swagger-editor.css';
 
   config.plugins = config.plugins.filter((plugin) => ![
     'HtmlWebpackPlugin',
