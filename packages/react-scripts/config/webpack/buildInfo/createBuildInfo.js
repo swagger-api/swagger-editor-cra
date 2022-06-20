@@ -1,5 +1,5 @@
 const os = require('os');
-const pkg = require('../../../package.json');
+const pkg = require('../../../../../../package.json');
 
 // git-describe
 const getGitDescription = require('./getGitDescription');
