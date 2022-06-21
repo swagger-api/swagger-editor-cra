@@ -1,17 +1,24 @@
-const os = require('os');
-const pkg = require('../../../../../../package.json');
+'use strict';
 
-// git-describe
+const paths = require('../../paths');
+const pkg = require(paths.appPackageJson);
 const getGitDescription = require('./getGitDescription');
 
 module.exports = () => {
   const gitInfo = getGitDescription();
-  const buildInfo = {
+  const raw = {
     PACKAGE_VERSION: pkg.version,
     GIT_COMMIT: gitInfo.hash,
     GIT_DIRTY: gitInfo.dirty,
-    HOSTNAME: os.hostname(),
     BUILD_TIME: new Date().toUTCString()
   };
-  return JSON.stringify(buildInfo);
+  // Stringify all values so we can feed into webpack DefinePlugin
+  const stringified = {
+    'buildInfo': Object.keys(raw).reduce((buildInfo, key) => {
+      buildInfo[key] = JSON.stringify(raw[key]);
+      return buildInfo;
+    }, {}),
+  };
+
+  return { raw, stringified };
 };

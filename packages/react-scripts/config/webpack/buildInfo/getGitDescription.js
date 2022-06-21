@@ -1,8 +1,11 @@
+'use strict';
+
 const { gitDescribeSync } = require('git-describe');
+const paths = require('../../paths');
 
 module.exports = () => {
   try {
-    return gitDescribeSync(__dirname);
+    return gitDescribeSync(paths.appPath);
   } catch (e) {
     console.error('getDescribeSync error:', e);
     return {

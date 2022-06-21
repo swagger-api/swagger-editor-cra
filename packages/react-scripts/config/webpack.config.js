@@ -675,11 +675,7 @@ module.exports = function (webpackEnv) {
       // It is absolutely essential that NODE_ENV is set to production
       // during a production build.
       // Otherwise React will be compiled in the very slow development mode.
-      new webpack.DefinePlugin(env.stringified),
-      // Makes buildInfo available to the JS code
-      new webpack.DefinePlugin({
-        buildInfo
-      }),
+      new webpack.DefinePlugin({...env.stringified, ...buildInfo.stringified }),
       // Experimental hot reloading for React .
       // https://github.com/facebook/react/tree/main/packages/react-refresh
       isEnvDevelopment &&
