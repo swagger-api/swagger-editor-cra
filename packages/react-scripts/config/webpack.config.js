@@ -387,6 +387,11 @@ module.exports = function (webpackEnv) {
           // match the requirements. When no loader matches it will fall
           // back to the "file" loader at the end of the loader list.
           oneOf: [
+            // https://webpack.js.org/guides/asset-modules/#replacing-inline-loader-syntax
+            {
+              resourceQuery: /raw/,
+              type: 'asset/inline',
+            },
             // TODO: Merge this config once `image/avif` is in the mime-db
             // https://github.com/jshttp/mime-db
             {
