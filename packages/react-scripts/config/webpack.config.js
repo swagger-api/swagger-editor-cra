@@ -374,6 +374,7 @@ module.exports = function (webpackEnv) {
           enforce: 'pre',
           exclude: [
             /@babel(?:\/|\\{1,2})runtime/,
+            /vscode-languageclient/,
             /vscode-languageserver-protocol/,
             /vscode-jsonrpc/,
             /unraw/,
