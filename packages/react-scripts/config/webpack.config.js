@@ -339,6 +339,8 @@ module.exports = function (webpackEnv) {
           'react-dom$': 'react-dom/profiling',
           'scheduler/tracing': 'scheduler/tracing-profiling',
         }),
+        // This doesn't pull any languages into bundles and works as monaco-editor-core was installed
+        'monaco-editor$': 'monaco-editor/esm/vs/editor/edcore.main.js',
         ...(modules.webpackAliases || {}),
       },
       plugins: [
