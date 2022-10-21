@@ -380,6 +380,7 @@ module.exports = function (webpackEnv) {
             /vscode-languageserver-protocol/,
             /vscode-jsonrpc/,
             /unraw/,
+            /autolinker/,
             /@jsdevtools\/ono/,
           ],
           test: /\.(js|mjs|jsx|ts|tsx|css)$/,
