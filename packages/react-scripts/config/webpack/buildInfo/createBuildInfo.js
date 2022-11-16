@@ -1,13 +1,11 @@
 'use strict';
 
-const paths = require('../../paths');
-const pkg = require(paths.appPackageJson);
 const getGitDescription = require('./getGitDescription');
 
 module.exports = () => {
   const gitInfo = getGitDescription();
   const raw = {
-    PACKAGE_VERSION: pkg.version,
+    PACKAGE_VERSION: process.env.REACT_APP_VERSION,
     GIT_COMMIT: gitInfo.hash,
     GIT_DIRTY: gitInfo.dirty,
     BUILD_TIME: new Date().toUTCString()
