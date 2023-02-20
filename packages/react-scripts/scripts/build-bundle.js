@@ -25,11 +25,12 @@ require('../config/env');
 const chalk = require('react-dev-utils/chalk');
 const bfj = require('bfj');
 const webpack = require('webpack');
-const configFactory = process.env.BUILD_UMD_BUNDLE === 'true'
-  ? require('../config/webpack.config.bundle.umd')
-  : process.env.BUILD_ESM_BUNDLE === 'true'
-  ? require('../config/webpack.config.bundle.esm')
-  : require('../config/webpack.config.bundle.esm');
+const configFactory =
+  process.env.BUILD_UMD_BUNDLE === 'true'
+    ? require('../config/webpack.config.bundle.umd')
+    : process.env.BUILD_ESM_BUNDLE === 'true'
+    ? require('../config/webpack.config.bundle.esm')
+    : require('../config/webpack.config.bundle.esm');
 const paths = require('../config/paths');
 const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');

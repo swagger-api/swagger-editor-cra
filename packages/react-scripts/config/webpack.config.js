@@ -216,8 +216,21 @@ module.exports = function (webpackEnv) {
     // This means they will be the "root" imports that are included in JS bundle.
     entry: {
       main: paths.appIndexJs,
-      'apidom.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'apidom', 'apidom.worker.js'),
-      'editor.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'editor.worker.js'),
+      'apidom.worker': path.join(
+        paths.appSrc,
+        'plugins',
+        'editor-monaco',
+        'workers',
+        'apidom',
+        'apidom.worker.js'
+      ),
+      'editor.worker': path.join(
+        paths.appSrc,
+        'plugins',
+        'editor-monaco',
+        'workers',
+        'editor.worker.js'
+      ),
     },
     externals: {
       esprima: 'esprima',
@@ -346,35 +359,64 @@ module.exports = function (webpackEnv) {
         // This alias makes sure we don't pull two different versions of ApiDOM.
         // swagger-client uses ApiDOM as well, and might come with different ApiDOM version.
         // SwaggerEditor ApiDOM dependency takes precendence in the resolution.
-        '@swagger-api/apidom-ast$': '/node_modules/@swagger-api/apidom-ast/es/index.js',
-        '@swagger-api/apidom-core$': '/node_modules/@swagger-api/apidom-core/es/index.js',
-        '@swagger-api/apidom-json-pointer$': '/node_modules/@swagger-api/apidom-json-pointer/es/index.js',
-        '@swagger-api/apidom-ls$': '/node_modules/@swagger-api/apidom-ls/es/index.js',
-        '@swagger-api/apidom-ns-api-design-systems$': '/node_modules/@swagger-api/apidom-ns-api-design-systems/es/index.js',
-        '@swagger-api/apidom-ns-asyncapi-2$': '/node_modules/@swagger-api/apidom-ns-asyncapi-2/es/index.js',
-        '@swagger-api/apidom-ns-json-schema-draft-4$': '/node_modules/@swagger-api/apidom-ns-json-schema-draft-4/es/index.js',
-        '@swagger-api/apidom-ns-json-schema-draft-6$': '/node_modules/@swagger-api/apidom-ns-json-schema-draft-6/es/index.js',
-        '@swagger-api/apidom-ns-json-schema-draft-7$': '/node_modules/@swagger-api/apidom-ns-json-schema-draft-7/es/index.js',
-        '@swagger-api/apidom-ns-openapi-3-0$': '/node_modules/@swagger-api/apidom-ns-openapi-3-0/es/index.js',
-        '@swagger-api/apidom-ns-openapi-3-1$': '/node_modules/@swagger-api/apidom-ns-openapi-3-1/es/index.js',
-        '@swagger-api/apidom-parser$': '/node_modules/@swagger-api/apidom-parser/es/parser.js',
-        '@swagger-api/apidom-parser-adapter-api-design-systems-json$': '/node_modules/@swagger-api/apidom-parser-adapter-api-design-systems-json/es/adapter.js',
-        '@swagger-api/apidom-parser-adapter-api-design-systems-yaml$': '/node_modules/@swagger-api/apidom-parser-adapter-api-design-systems-yaml/es/adapter.js',
-        '@swagger-api/apidom-parser-adapter-asyncapi-json-2$': '/node_modules/@swagger-api/apidom-parser-adapter-asyncapi-json-2/es/adapter.js',
-        '@swagger-api/apidom-parser-adapter-asyncapi-yaml-2$': '/node_modules/@swagger-api/apidom-parser-adapter-asyncapi-yaml-2/es/adapter.js',
-        '@swagger-api/apidom-parser-adapter-json$': '/node_modules/@swagger-api/apidom-parser-adapter-json/es/adapter-browser.js',
-        '@swagger-api/apidom-parser-adapter-openapi-json-3-0$': '/node_modules/@swagger-api/apidom-parser-adapter-openapi-json-3-0/es/adapter.js',
-        '@swagger-api/apidom-parser-adapter-openapi-json-3-1$': '/node_modules/@swagger-api/apidom-parser-adapter-openapi-json-3-1/es/adapter.js',
-        '@swagger-api/apidom-parser-adapter-openapi-yaml-3-0$': '/node_modules/@swagger-api/apidom-parser-adapter-openapi-yaml-3-0/es/adapter.js',
-        '@swagger-api/apidom-parser-adapter-openapi-yaml-3-1$': '/node_modules/@swagger-api/apidom-parser-adapter-openapi-yaml-3-1/es/adapter.js',
-        '@swagger-api/apidom-parser-adapter-yaml-1-2$': '/node_modules/@swagger-api/apidom-parser-adapter-yaml-1-2/es/adapter-browser.js',
-        '@swagger-api/apidom-reference$': '/node_modules/@swagger-api/apidom-reference/es/index.js',
-        '@swagger-api/apidom-reference/configuration/empty$': '/node_modules/@swagger-api/apidom-reference/es/configuration/empty.js',
-        '@swagger-api/apidom-reference/resolve/strategies/openapi-3-1$': '/node_modules/@swagger-api/apidom-reference/es/resolve/strategies/openapi-3-1/index.js',
-        '@swagger-api/apidom-reference/parse/parsers/binary$': '/node_modules/@swagger-api/apidom-reference/es/parse/parsers/binary/index-browser.js',
-        '@swagger-api/apidom-reference/dereference/strategies/openapi-3-1/selectors/$anchor$': '/node_modules/@swagger-api/apidom-reference/es/dereference/strategies/openapi-3-1/selectors/$anchor/index.js',
-        '@swagger-api/apidom-reference/dereference/strategies/openapi-3-1/selectors/uri$': '/node_modules/@swagger-api/apidom-reference/es/dereference/strategies/openapi-3-1/selectors/uri/index.js',
-        '@swagger-api/apidom-reference/dereference/strategies/openapi-3-1$': '/node_modules/@swagger-api/apidom-reference/es/dereference/strategies/openapi-3-1/index.js',
+        '@swagger-api/apidom-ast$':
+          '/node_modules/@swagger-api/apidom-ast/es/index.js',
+        '@swagger-api/apidom-core$':
+          '/node_modules/@swagger-api/apidom-core/es/index.js',
+        '@swagger-api/apidom-json-pointer$':
+          '/node_modules/@swagger-api/apidom-json-pointer/es/index.js',
+        '@swagger-api/apidom-ls$':
+          '/node_modules/@swagger-api/apidom-ls/es/index.js',
+        '@swagger-api/apidom-ns-api-design-systems$':
+          '/node_modules/@swagger-api/apidom-ns-api-design-systems/es/index.js',
+        '@swagger-api/apidom-ns-asyncapi-2$':
+          '/node_modules/@swagger-api/apidom-ns-asyncapi-2/es/index.js',
+        '@swagger-api/apidom-ns-json-schema-draft-4$':
+          '/node_modules/@swagger-api/apidom-ns-json-schema-draft-4/es/index.js',
+        '@swagger-api/apidom-ns-json-schema-draft-6$':
+          '/node_modules/@swagger-api/apidom-ns-json-schema-draft-6/es/index.js',
+        '@swagger-api/apidom-ns-json-schema-draft-7$':
+          '/node_modules/@swagger-api/apidom-ns-json-schema-draft-7/es/index.js',
+        '@swagger-api/apidom-ns-openapi-3-0$':
+          '/node_modules/@swagger-api/apidom-ns-openapi-3-0/es/index.js',
+        '@swagger-api/apidom-ns-openapi-3-1$':
+          '/node_modules/@swagger-api/apidom-ns-openapi-3-1/es/index.js',
+        '@swagger-api/apidom-parser$':
+          '/node_modules/@swagger-api/apidom-parser/es/parser.js',
+        '@swagger-api/apidom-parser-adapter-api-design-systems-json$':
+          '/node_modules/@swagger-api/apidom-parser-adapter-api-design-systems-json/es/adapter.js',
+        '@swagger-api/apidom-parser-adapter-api-design-systems-yaml$':
+          '/node_modules/@swagger-api/apidom-parser-adapter-api-design-systems-yaml/es/adapter.js',
+        '@swagger-api/apidom-parser-adapter-asyncapi-json-2$':
+          '/node_modules/@swagger-api/apidom-parser-adapter-asyncapi-json-2/es/adapter.js',
+        '@swagger-api/apidom-parser-adapter-asyncapi-yaml-2$':
+          '/node_modules/@swagger-api/apidom-parser-adapter-asyncapi-yaml-2/es/adapter.js',
+        '@swagger-api/apidom-parser-adapter-json$':
+          '/node_modules/@swagger-api/apidom-parser-adapter-json/es/adapter-browser.js',
+        '@swagger-api/apidom-parser-adapter-openapi-json-3-0$':
+          '/node_modules/@swagger-api/apidom-parser-adapter-openapi-json-3-0/es/adapter.js',
+        '@swagger-api/apidom-parser-adapter-openapi-json-3-1$':
+          '/node_modules/@swagger-api/apidom-parser-adapter-openapi-json-3-1/es/adapter.js',
+        '@swagger-api/apidom-parser-adapter-openapi-yaml-3-0$':
+          '/node_modules/@swagger-api/apidom-parser-adapter-openapi-yaml-3-0/es/adapter.js',
+        '@swagger-api/apidom-parser-adapter-openapi-yaml-3-1$':
+          '/node_modules/@swagger-api/apidom-parser-adapter-openapi-yaml-3-1/es/adapter.js',
+        '@swagger-api/apidom-parser-adapter-yaml-1-2$':
+          '/node_modules/@swagger-api/apidom-parser-adapter-yaml-1-2/es/adapter-browser.js',
+        '@swagger-api/apidom-reference$':
+          '/node_modules/@swagger-api/apidom-reference/es/index.js',
+        '@swagger-api/apidom-reference/configuration/empty$':
+          '/node_modules/@swagger-api/apidom-reference/es/configuration/empty.js',
+        '@swagger-api/apidom-reference/resolve/strategies/openapi-3-1$':
+          '/node_modules/@swagger-api/apidom-reference/es/resolve/strategies/openapi-3-1/index.js',
+        '@swagger-api/apidom-reference/parse/parsers/binary$':
+          '/node_modules/@swagger-api/apidom-reference/es/parse/parsers/binary/index-browser.js',
+        '@swagger-api/apidom-reference/dereference/strategies/openapi-3-1/selectors/$anchor$':
+          '/node_modules/@swagger-api/apidom-reference/es/dereference/strategies/openapi-3-1/selectors/$anchor/index.js',
+        '@swagger-api/apidom-reference/dereference/strategies/openapi-3-1/selectors/uri$':
+          '/node_modules/@swagger-api/apidom-reference/es/dereference/strategies/openapi-3-1/selectors/uri/index.js',
+        '@swagger-api/apidom-reference/dereference/strategies/openapi-3-1$':
+          '/node_modules/@swagger-api/apidom-reference/es/dereference/strategies/openapi-3-1/index.js',
         ...(modules.webpackAliases || {}),
       },
       plugins: [
@@ -718,7 +760,10 @@ module.exports = function (webpackEnv) {
       // It is absolutely essential that NODE_ENV is set to production
       // during a production build.
       // Otherwise React will be compiled in the very slow development mode.
-      new webpack.DefinePlugin({...env.stringified, ...buildInfo.stringified }),
+      new webpack.DefinePlugin({
+        ...env.stringified,
+        ...buildInfo.stringified,
+      }),
       // Experimental hot reloading for React .
       // https://github.com/facebook/react/tree/main/packages/react-refresh
       isEnvDevelopment &&

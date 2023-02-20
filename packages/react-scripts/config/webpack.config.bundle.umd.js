@@ -110,7 +110,7 @@ const commonConfig = webpackEnv => {
   return config;
 };
 
-const swaggerEditorConfig = (webpackEnv) => {
+const swaggerEditorConfig = webpackEnv => {
   const config = commonConfig(webpackEnv);
 
   config.output.libraryTarget = 'umd';
@@ -133,7 +133,13 @@ const swaggerEditorConfig = (webpackEnv) => {
     ...config.resolve.alias,
     'react-is': path.resolve(paths.appNodeModules, 'react-is'),
     dompurify: path.resolve(paths.appNodeModules, 'dompurify'),
-    'json-schema-traverse': path.resolve(paths.appNodeModules, '@swagger-api', 'apidom-ls', 'node_modules', 'json-schema-traverse'),
+    'json-schema-traverse': path.resolve(
+      paths.appNodeModules,
+      '@swagger-api',
+      'apidom-ls',
+      'node_modules',
+      'json-schema-traverse'
+    ),
     '@babel/runtime': path.resolve(paths.appNodeModules, '@babel', 'runtime'),
   };
 
@@ -150,17 +156,36 @@ const swaggerEditorConfig = (webpackEnv) => {
   return config;
 };
 
-const apidomWorkerConfig = (webpackEnv) => {
+const apidomWorkerConfig = webpackEnv => {
   const config = commonConfig(webpackEnv);
 
   config.entry = {
-    'apidom.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'apidom', 'apidom.worker.js'),
+    'apidom.worker': path.join(
+      paths.appSrc,
+      'plugins',
+      'editor-monaco',
+      'workers',
+      'apidom',
+      'apidom.worker.js'
+    ),
   };
 
   config.resolve.alias = {
     ...config.resolve.alias,
-    'json-schema-traverse': path.resolve(paths.appNodeModules, '@swagger-api', 'apidom-ls', 'node_modules', 'json-schema-traverse'),
-    ajv: path.join(paths.appNodeModules, '@swagger-api', 'apidom-ls', 'node_modules', 'ajv'),
+    'json-schema-traverse': path.resolve(
+      paths.appNodeModules,
+      '@swagger-api',
+      'apidom-ls',
+      'node_modules',
+      'json-schema-traverse'
+    ),
+    ajv: path.join(
+      paths.appNodeModules,
+      '@swagger-api',
+      'apidom-ls',
+      'node_modules',
+      'ajv'
+    ),
   };
 
   config.plugins = [
@@ -174,11 +199,17 @@ const apidomWorkerConfig = (webpackEnv) => {
   return config;
 };
 
-const editorWorkerConfig = (webpackEnv) => {
+const editorWorkerConfig = webpackEnv => {
   const config = commonConfig(webpackEnv);
 
   config.entry = {
-    'editor.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'editor.worker.js'),
+    'editor.worker': path.join(
+      paths.appSrc,
+      'plugins',
+      'editor-monaco',
+      'workers',
+      'editor.worker.js'
+    ),
   };
 
   config.plugins = [

@@ -6,15 +6,29 @@ const configFactory = require('./webpack.config');
 const nodeExternals = require('webpack-node-externals');
 
 module.exports = function (webpackEnv) {
-  const config = configFactory(webpackEnv)
-  const shouldProduceCompactBundle = process.env.REACT_APP_COMPACT_BUNDLE !== 'false';
+  const config = configFactory(webpackEnv);
+  const shouldProduceCompactBundle =
+    process.env.REACT_APP_COMPACT_BUNDLE !== 'false';
   const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
   const oneOfRuleIndex = shouldUseSourceMap ? 1 : 0;
 
   config.entry = {
     'swagger-editor': paths.appIndexJs,
-    'apidom.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'apidom', 'apidom.worker.js'),
-    'editor.worker': path.join(paths.appSrc, 'plugins', 'editor-monaco', 'workers', 'editor.worker.js'),
+    'apidom.worker': path.join(
+      paths.appSrc,
+      'plugins',
+      'editor-monaco',
+      'workers',
+      'apidom',
+      'apidom.worker.js'
+    ),
+    'editor.worker': path.join(
+      paths.appSrc,
+      'plugins',
+      'editor-monaco',
+      'workers',
+      'editor.worker.js'
+    ),
   };
   config.output.path = paths.appDist;
   config.output.filename = '[name].js';
@@ -38,7 +52,7 @@ module.exports = function (webpackEnv) {
   config.externals = [
     config.externals,
     nodeExternals({
-      importType: (moduleName) => {
+      importType: moduleName => {
         if (moduleName === '@asyncapi/react-component') {
           /**
            * ideal state: return `import ${moduleName}`;
@@ -53,14 +67,14 @@ module.exports = function (webpackEnv) {
       },
       allowlist: [
         'swagger-ui-react/swagger-ui.css',
-        '@asyncapi/react-component/styles/default.min.css'
-      ]
-    })
+        '@asyncapi/react-component/styles/default.min.css',
+      ],
+    }),
   ];
 
   config.optimization.splitChunks = {
     cacheGroups: {
-      default: false
+      default: false,
     },
   };
   config.optimization.runtimeChunk = false;
@@ -90,7 +104,9 @@ module.exports = function (webpackEnv) {
     });
   }
 
-  const svgRule = config.module.rules[oneOfRuleIndex].oneOf.find((rule) => String(rule.test) === '/\\.svg$/');
+  const svgRule = config.module.rules[oneOfRuleIndex].oneOf.find(
+    rule => String(rule.test) === '/\\.svg$/'
+  );
   if (shouldProduceCompactBundle) {
     /**
      * We want all SVG files become part of the bundle.
@@ -98,7 +114,7 @@ module.exports = function (webpackEnv) {
     svgRule.type = 'asset/inline';
     svgRule.use.pop();
   } else {
-    svgRule.use[1].options.name = '[name].[hash].[ext]'
+    svgRule.use[1].options.name = '[name].[hash].[ext]';
   }
 
   if (shouldProduceCompactBundle) {
@@ -114,17 +130,22 @@ module.exports = function (webpackEnv) {
   /**
    * We want to have deterministic name for our CSS bundle.
    */
-  const miniCssExtractPlugin = config.plugins.find((plugin) => plugin.constructor.name === 'MiniCssExtractPlugin');
+  const miniCssExtractPlugin = config.plugins.find(
+    plugin => plugin.constructor.name === 'MiniCssExtractPlugin'
+  );
   miniCssExtractPlugin.options.filename = 'swagger-editor.css';
 
-  config.plugins = config.plugins.filter((plugin) => ![
-    'HtmlWebpackPlugin',
-    'InlineChunkHtmlPlugin',
-    'InterpolateHtmlPlugin',
-    'ReactRefreshWebpackPlugin',
-    'WebpackManifestPlugin',
-    'WorkboxWebpackPlugin'
-  ].includes(plugin.constructor.name));
+  config.plugins = config.plugins.filter(
+    plugin =>
+      ![
+        'HtmlWebpackPlugin',
+        'InlineChunkHtmlPlugin',
+        'InterpolateHtmlPlugin',
+        'ReactRefreshWebpackPlugin',
+        'WebpackManifestPlugin',
+        'WorkboxWebpackPlugin',
+      ].includes(plugin.constructor.name)
+  );
 
   return config;
 };

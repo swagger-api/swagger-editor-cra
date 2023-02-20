@@ -31,7 +31,9 @@ const publicUrlOrPath = getPublicUrlOrPath(
 
 const buildPath = process.env.BUILD_PATH || 'build';
 const distPath = process.env.DIST_PATH || 'dist';
-const isBuildingBundle = process.env.BUILD_ESM_BUNDLE === 'true' || process.env.BUILD_UMD_BUNDLE === 'true';
+const isBuildingBundle =
+  process.env.BUILD_ESM_BUNDLE === 'true' ||
+  process.env.BUILD_UMD_BUNDLE === 'true';
 
 const moduleFileExtensions = [
   'web.mjs',
@@ -68,7 +70,10 @@ module.exports = {
   appDist: resolveApp(distPath),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveModule(resolveApp, isBuildingBundle ? 'src/App' : 'src/index'),
+  appIndexJs: resolveModule(
+    resolveApp,
+    isBuildingBundle ? 'src/App' : 'src/index'
+  ),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
   appTsConfig: resolveApp('tsconfig.json'),
@@ -94,7 +99,10 @@ module.exports = {
   appDist: resolveApp(distPath),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveModule(resolveApp, isBuildingBundle ? 'src/App' : 'src/index'),
+  appIndexJs: resolveModule(
+    resolveApp,
+    isBuildingBundle ? 'src/App' : 'src/index'
+  ),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
   appTsConfig: resolveApp('tsconfig.json'),
@@ -133,7 +141,10 @@ if (
     appDist: resolveOwn(path.join('../..', distPath)),
     appPublic: resolveOwn(`${templatePath}/public`),
     appHtml: resolveOwn(`${templatePath}/public/index.html`),
-    appIndexJs: resolveModule(resolveOwn, isBuildingBundle ? `${templatePath}/src/App` : `${templatePath}/src/index`),
+    appIndexJs: resolveModule(
+      resolveOwn,
+      isBuildingBundle ? `${templatePath}/src/App` : `${templatePath}/src/index`
+    ),
     appPackageJson: resolveOwn('package.json'),
     appSrc: resolveOwn(`${templatePath}/src`),
     appTsConfig: resolveOwn(`${templatePath}/tsconfig.json`),
