@@ -404,7 +404,7 @@ module.exports = function (webpackEnv) {
         '@swagger-api/apidom-parser-adapter-yaml-1-2$':
           '/node_modules/@swagger-api/apidom-parser-adapter-yaml-1-2/es/adapter-browser.js',
         '@swagger-api/apidom-reference$':
-          '/node_modules/@swagger-api/apidom-reference/es/index.js',
+          '/node_modules/@swagger-api/apidom-reference/es/configuration/saturated.js',
         '@swagger-api/apidom-reference/configuration/empty$':
           '/node_modules/@swagger-api/apidom-reference/es/configuration/empty.js',
         '@swagger-api/apidom-reference/resolve/strategies/openapi-3-1$':
