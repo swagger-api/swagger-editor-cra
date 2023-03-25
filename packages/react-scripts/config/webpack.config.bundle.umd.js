@@ -163,9 +163,8 @@ const apidomWorkerConfig = webpackEnv => {
     'apidom.worker': path.join(
       paths.appSrc,
       'plugins',
-      'editor-monaco',
-      'workers',
-      'apidom',
+      'editor-monaco-language-apidom',
+      'language',
       'apidom.worker.js'
     ),
   };
