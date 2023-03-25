@@ -224,10 +224,7 @@ module.exports = function (webpackEnv) {
         'apidom',
         'apidom.worker.js'
       ),
-      'editor.worker': path.join(
-        paths.appNodeModules,
-        'monaco-editor/esm/vs/editor/editor.worker.js'
-      ),
+      'editor.worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
     },
     externals: {
       esprima: 'esprima',

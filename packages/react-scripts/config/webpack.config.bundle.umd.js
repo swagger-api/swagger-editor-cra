@@ -203,10 +203,7 @@ const editorWorkerConfig = webpackEnv => {
   const config = commonConfig(webpackEnv);
 
   config.entry = {
-    'editor.worker': path.join(
-      paths.appNodeModules,
-      'monaco-editor/esm/vs/editor/editor.worker.js'
-    ),
+    'editor.worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
   };
 
   config.plugins = [
