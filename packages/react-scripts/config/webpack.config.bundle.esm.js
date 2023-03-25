@@ -17,9 +17,8 @@ module.exports = function (webpackEnv) {
     'apidom.worker': path.join(
       paths.appSrc,
       'plugins',
-      'editor-monaco',
-      'workers',
-      'apidom',
+      'editor-monaco-language-apidom',
+      'language',
       'apidom.worker.js'
     ),
     'editor.worker': require.resolve(
