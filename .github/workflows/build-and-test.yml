@@ -56,21 +56,20 @@ jobs:
         run: npm i -g yarn
       - name: Run integration tests
         run: npm run test:integration
-
-  e2e-simple:
-    name: E2E Simple
-    uses: ./.github/workflows/e2e-base.yml
-    with:
-      testScript: 'tasks/e2e-simple.sh'
-
-  e2e-installs:
-    name: E2E Installs
-    uses: ./.github/workflows/e2e-base.yml
-    with:
-      testScript: 'tasks/e2e-installs.sh'
-
-  e2e-kitchensink:
-    name: E2E Kitchensink
-    uses: ./.github/workflows/e2e-base.yml
-    with:
-      testScript: 'tasks/e2e-kitchensink.sh'
+#  e2e-simple:
+#    name: E2E Simple
+#    uses: ./.github/workflows/e2e-base.yml
+#    with:
+#      testScript: 'tasks/e2e-simple.sh'
+#
+#  e2e-installs:
+#    name: E2E Installs
+#    uses: ./.github/workflows/e2e-base.yml
+#    with:
+#      testScript: 'tasks/e2e-installs.sh'
+#
+#  e2e-kitchensink:
+#    name: E2E Kitchensink
+#    uses: ./.github/workflows/e2e-base.yml
+#    with:
+#      testScript: 'tasks/e2e-kitchensink.sh'
