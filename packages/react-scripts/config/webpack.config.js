@@ -22,6 +22,7 @@ const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const ReplaceAssetNamePlugin = require('./webpack/plugins/replace-asset-name-webpack-plugin');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const paths = require('./paths');
@@ -61,6 +62,9 @@ const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
 const emitErrorsAsWarnings = process.env.ESLINT_NO_DEV_ERRORS === 'true';
 const disableESLintPlugin = process.env.DISABLE_ESLINT_PLUGIN === 'true';
 const enableProgressPlugin = process.env.ENABLE_PROGRESS_PLUGIN === 'true';
+const isBuildingBundle =
+  process.env.BUILD_ESM_BUNDLE === 'true' ||
+  process.env.BUILD_UMD_BUNDLE === 'true';
 
 const imageInlineSizeLimit = parseInt(
   process.env.IMAGE_INLINE_SIZE_LIMIT || '10000'
@@ -237,9 +241,10 @@ module.exports = function (webpackEnv) {
       pathinfo: isEnvDevelopment,
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
-      filename: isEnvProduction
-        ? 'static/js/[name].js'
-        : isEnvDevelopment && 'static/js/[name].js',
+      filename:
+        isEnvDevelopment || (isEnvProduction && isBuildingBundle)
+          ? 'static/js/[name].js'
+          : 'static/js/[name].[contenthash:8].js',
       // There are also additional JS chunk files if you use code splitting.
       chunkFilename: isEnvProduction
         ? 'static/js/[name].[contenthash:8].chunk.js'
@@ -708,6 +713,22 @@ module.exports = function (webpackEnv) {
       ].filter(Boolean),
     },
     plugins: [
+      // Allow proper cache invalidation of worker build fragments
+      new ReplaceAssetNamePlugin({
+        asset: /main\..+.js$/,
+        rules: [
+          {
+            search: env.raw.REACT_APP_APIDOM_WORKER_FILENAME,
+            replace: /apidom\.worker\..+.js$/,
+            transform: path.basename,
+          },
+          {
+            search: env.raw.REACT_APP_EDITOR_WORKER_FILENAME,
+            replace: /editor\.worker\..+.js$/,
+            transform: path.basename,
+          },
+        ],
+      }),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign(
