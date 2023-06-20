@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Copy obtained from: https://github.com/sibiraj-s/replace-asset-name-webpack-plugin
  *
