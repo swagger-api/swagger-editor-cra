@@ -455,7 +455,6 @@ module.exports = function (webpackEnv) {
             /vscode-languageclient/,
             /vscode-languageserver-protocol/,
             /vscode-jsonrpc/,
-            /unraw/,
             /autolinker/,
             /@jsdevtools\/ono/,
           ],
