@@ -352,6 +352,10 @@ module.exports = function (webpackEnv) {
           'react-dom$': 'react-dom/profiling',
           'scheduler/tracing': 'scheduler/tracing-profiling',
         }),
+        // This alias allows us to import plugins as absolute path
+        plugins: path.resolve(paths.appSrc, 'plugins/'),
+        // This alias allows us to import presets as absolute path
+        presets: path.resolve(paths.appSrc, 'presets/'),
         // This alias doesn't pull any languages into bundles and works as monaco-editor-core was installed
         'monaco-editor$': 'monaco-editor/esm/vs/editor/edcore.main.js',
         // This alias makes sure we don't pull two different versions of monaco-editor

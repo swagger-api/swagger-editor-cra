@@ -1,9 +1,21 @@
 'use strict';
 
 const path = require('path');
+const globby = require('globby');
 const paths = require('./paths');
 const configFactory = require('./webpack.config');
 const nodeExternals = require('webpack-node-externals');
+
+const pluginFiles = globby.sync(['plugins/*/index.js'], { cwd: paths.appSrc });
+const pluginEntries = pluginFiles.reduce((acc, plugin) => {
+  acc[plugin.replace(/\.js$/, '')] = path.join(paths.appSrc, plugin);
+  return acc;
+}, {});
+const presetFiles = globby.sync(['presets/*/index.js'], { cwd: paths.appSrc });
+const presetEntries = presetFiles.reduce((acc, preset) => {
+  acc[preset.replace(/\.js$/, '')] = path.join(paths.appSrc, preset);
+  return acc;
+}, {});
 
 module.exports = function (webpackEnv) {
   const config = configFactory(webpackEnv);
@@ -14,6 +26,8 @@ module.exports = function (webpackEnv) {
 
   config.entry = {
     'swagger-editor': paths.appIndexJs,
+    ...pluginEntries,
+    ...presetEntries,
     'apidom.worker': path.join(
       paths.appSrc,
       'plugins',
@@ -60,11 +74,34 @@ module.exports = function (webpackEnv) {
         }
         return `module ${moduleName}`;
       },
-      allowlist: [
-        'swagger-ui-react/swagger-ui.css',
-        '@asyncapi/react-component/styles/default.min.css',
-      ],
+      allowlist: ['swagger-ui-react/swagger-ui.css'],
     }),
+    // Handle plugins as externals
+    ({ context, request }, callback) => {
+      if (/^plugins\/.+\/index\.js/.test(request)) {
+        const requestFullPath = path.resolve(paths.appSrc, request);
+        let pluginRelativePath = path.relative(context, requestFullPath);
+        if (!pluginRelativePath.startsWith('.')) {
+          pluginRelativePath = `./${pluginRelativePath}`;
+        }
+
+        return callback(null, pluginRelativePath, 'module');
+      }
+      callback();
+    },
+    // Handle presets as externals
+    ({ context, request }, callback) => {
+      if (/^presets\/.+\/index\.js/.test(request)) {
+        const requestFullPath = path.resolve(paths.appSrc, request);
+        let presetRelativePath = path.relative(context, requestFullPath);
+        if (!presetRelativePath.startsWith('.')) {
+          presetRelativePath = `./${presetRelativePath}`;
+        }
+
+        return callback(null, presetRelativePath, 'module');
+      }
+      callback();
+    },
   ];
 
   config.optimization.splitChunks = {
