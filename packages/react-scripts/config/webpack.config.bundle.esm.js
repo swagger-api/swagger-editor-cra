@@ -107,7 +107,7 @@ module.exports = function (webpackEnv) {
      * We want all SVG files become part of the bundle.
      */
     svgRule.type = 'asset/inline';
-    svgRule.use.pop();
+    delete svgRule.use;
   } else {
     svgRule.use[1].options.name = '[name].[hash].[ext]';
   }
