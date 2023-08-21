@@ -80,6 +80,16 @@ const commonConfig = webpackEnv => {
     });
   }
 
+  if (shouldProduceCompactBundle) {
+    /**
+     * We want HTML files to become part of the bundle.
+     */
+    config.module.rules[oneOfRuleIndex].oneOf.unshift({
+      test: /\.html$/,
+      type: 'asset/inline',
+    });
+  }
+
   /**
    * We want to have deterministic name for our CSS bundle.
    */
