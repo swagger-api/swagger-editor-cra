@@ -360,6 +360,9 @@ module.exports = function (webpackEnv) {
         'monaco-editor$': 'monaco-editor/esm/vs/editor/edcore.main.js',
         // This alias makes sure we don't pull two different versions of monaco-editor
         'monaco-editor': '/node_modules/monaco-editor',
+        // This alias makes sure we're avoiding a runtime error related to this package
+        '@stoplight/ordered-object-literal$':
+          '/node_modules/@stoplight/ordered-object-literal/src/index.mjs',
         // This alias makes sure we don't pull two different versions of ApiDOM.
         // swagger-client uses ApiDOM as well, and might come with different ApiDOM version.
         // SwaggerEditor ApiDOM dependency takes precendence in the resolution.
@@ -466,6 +469,7 @@ module.exports = function (webpackEnv) {
             /vscode-jsonrpc/,
             /autolinker/,
             /@jsdevtools\/ono/,
+            /@stoplight/,
           ],
           test: /\.(js|mjs|jsx|ts|tsx|css)$/,
           loader: require.resolve('source-map-loader'),
