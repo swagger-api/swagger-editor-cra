@@ -356,8 +356,6 @@ module.exports = function (webpackEnv) {
         plugins: path.resolve(paths.appSrc, 'plugins/'),
         // This alias allows us to import presets as absolute path
         presets: path.resolve(paths.appSrc, 'presets/'),
-        // This alias doesn't pull any languages into bundles and works as monaco-editor-core was installed
-        'monaco-editor$': 'monaco-editor/esm/vs/editor/edcore.main.js',
         // This alias makes sure we don't pull two different versions of monaco-editor
         'monaco-editor': '/node_modules/monaco-editor',
         // This alias makes sure we're avoiding a runtime error related to this package
@@ -373,6 +371,7 @@ module.exports = function (webpackEnv) {
         // Make sure your source files are compiled, as they will not be processed in any way.
         new ModuleScopePlugin(paths.appSrc, [
           paths.appPackageJson,
+          '/node_modules/monaco-editor',
           reactRefreshRuntimeEntry,
           reactRefreshWebpackPluginRuntimeEntry,
           babelRuntimeEntry,
@@ -397,15 +396,7 @@ module.exports = function (webpackEnv) {
         // Handle node_modules packages that contain sourcemaps
         shouldUseSourceMap && {
           enforce: 'pre',
-          exclude: [
-            /@babel(?:\/|\\{1,2})runtime/,
-            /vscode-languageclient/,
-            /vscode-languageserver-protocol/,
-            /vscode-jsonrpc/,
-            /autolinker/,
-            /@jsdevtools\/ono/,
-            /@stoplight/,
-          ],
+          exclude: [/autolinker/, /@jsdevtools\/ono/, /@stoplight/],
           test: /\.(js|mjs|jsx|ts|tsx|css)$/,
           loader: require.resolve('source-map-loader'),
         },
