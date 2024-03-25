@@ -859,6 +859,11 @@ module.exports = function (webpackEnv) {
         process: 'process/browser.js',
         Buffer: ['buffer', 'Buffer'],
       }),
+      new webpack.BannerPlugin({
+        banner: "globalThis.vscode = { process: Symbol.for('vscode') };",
+        raw: true, // This is important, it tells webpack to prepend the code as-is.
+        entryOnly: true, // This adds the banner only to the beginning of the bundle.
+      }),
       enableProgressPlugin &&
         new webpack.ProgressPlugin({
           activeModules: false,
