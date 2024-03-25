@@ -460,6 +460,15 @@ module.exports = function (webpackEnv) {
                 and: [/\.(ts|tsx|js|jsx|md|mdx)$/],
               },
             },
+            // Provide explicit import of `process` symbol.
+            {
+              test: /@apidevtools\/json-schema-ref-parser\/lib\/util\/url.js$/,
+              loader: 'imports-loader',
+              options: {
+                type: 'commonjs',
+                imports: ['single process/browser process'],
+              },
+            },
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               include: paths.appSrc,
@@ -856,13 +865,7 @@ module.exports = function (webpackEnv) {
           },
         }),
       new webpack.ProvidePlugin({
-        process: 'process/browser.js',
         Buffer: ['buffer', 'Buffer'],
-      }),
-      new webpack.BannerPlugin({
-        banner: "globalThis.vscode = { process: Symbol.for('vscode') };",
-        raw: true, // This is important, it tells webpack to prepend the code as-is.
-        entryOnly: true, // This adds the banner only to the beginning of the bundle.
       }),
       enableProgressPlugin &&
         new webpack.ProgressPlugin({
