@@ -460,15 +460,6 @@ module.exports = function (webpackEnv) {
                 and: [/\.(ts|tsx|js|jsx|md|mdx)$/],
               },
             },
-            // Provide explicit import of `process` symbol.
-            {
-              test: /@apidevtools\/json-schema-ref-parser\/lib\/util\/url.js$/,
-              loader: 'imports-loader',
-              options: {
-                type: 'commonjs',
-                imports: ['single process/browser process'],
-              },
-            },
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               include: paths.appSrc,
