@@ -34,6 +34,7 @@ const distPath = process.env.DIST_PATH || 'dist';
 const isBuildingBundle =
   process.env.BUILD_ESM_BUNDLE === 'true' ||
   process.env.BUILD_UMD_BUNDLE === 'true';
+const isRunningE2ETests = process.env.E2E_TESTS === 'true';
 
 const moduleFileExtensions = [
   'web.mjs',
@@ -68,8 +69,10 @@ module.exports = {
   appPath: resolveApp('.'),
   appBuild: resolveApp(buildPath),
   appDist: resolveApp(distPath),
-  appPublic: resolveApp('public'),
-  appHtml: resolveApp('public/index.html'),
+  appPublic: resolveApp(isRunningE2ETests ? 'test/cypress/static' : 'public'),
+  appHtml: resolveApp(
+    isRunningE2ETests ? 'test/cypress/static/index.html' : 'public/index.html'
+  ),
   appIndexJs: resolveModule(
     resolveApp,
     isBuildingBundle ? 'src/App' : 'src/index'
@@ -97,8 +100,10 @@ module.exports = {
   appPath: resolveApp('.'),
   appBuild: resolveApp(buildPath),
   appDist: resolveApp(distPath),
-  appPublic: resolveApp('public'),
-  appHtml: resolveApp('public/index.html'),
+  appPublic: resolveApp(isRunningE2ETests ? 'test/cypress/static' : 'public'),
+  appHtml: resolveApp(
+    isRunningE2ETests ? 'test/cypress/static/index.html' : 'public/index.html'
+  ),
   appIndexJs: resolveModule(
     resolveApp,
     isBuildingBundle ? 'src/App' : 'src/index'
