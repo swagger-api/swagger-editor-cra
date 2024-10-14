@@ -32,6 +32,7 @@ module.exports = babelJest.createTransformer({
       },
     ],
   ],
+  plugins: ['@babel/plugin-transform-class-static-block'],
   babelrc: false,
   configFile: false,
 });
