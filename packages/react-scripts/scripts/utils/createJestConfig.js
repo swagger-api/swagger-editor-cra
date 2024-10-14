@@ -56,6 +56,10 @@ module.exports = (resolve, rootDir, isEjecting) => {
     moduleNameMapper: {
       '^react-native$': 'react-native-web',
       '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
+      'vscode/vscode/vs/base/common/strings':
+        'vscode/vscode/src/vs/base/common/strings.js',
+      'vscode/vscode/vs/editor/common/diff/defaultLinesDiffComputer/defaultLinesDiffComputer':
+        'vscode/vscode/src/vs/editor/common/diff/defaultLinesDiffComputer/defaultLinesDiffComputer.js',
       ...(modules.jestAliases || {}),
     },
     moduleFileExtensions: [...paths.moduleFileExtensions, 'node'].filter(
