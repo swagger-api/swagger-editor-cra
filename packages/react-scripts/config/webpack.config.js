@@ -436,29 +436,45 @@ module.exports = function (webpackEnv) {
             },
             {
               test: /\.svg$/,
-              use: [
+              oneOf: [
+                // Transform SVG into a React component when imported from JavaScript/TypeScript/Markdown files.
                 {
-                  loader: require.resolve('@svgr/webpack'),
-                  options: {
-                    prettier: false,
-                    svgo: false,
-                    svgoConfig: {
-                      plugins: [{ removeViewBox: false }],
+                  issuer: { and: [/\.(ts|tsx|js|jsx|md|mdx)$/] },
+                  use: [
+                    {
+                      loader: require.resolve('@svgr/webpack'),
+                      options: {
+                        prettier: false,
+                        svgo: false,
+                        svgoConfig: {
+                          plugins: [{ removeViewBox: false }],
+                        },
+                        titleProp: true,
+                        ref: true,
+                      },
                     },
-                    titleProp: true,
-                    ref: true,
-                  },
+                    {
+                      loader: require.resolve('file-loader'),
+                      options: {
+                        name: 'static/media/[name].[hash].[ext]',
+                      },
+                    },
+                  ],
                 },
+                // Fallback: Inline SVG as a url-encoded data URL for all other imports.
                 {
-                  loader: require.resolve('file-loader'),
-                  options: {
-                    name: 'static/media/[name].[hash].[ext]',
+                  type: 'asset/inline',
+                  generator: {
+                    dataUrl: content => {
+                      // Convert the raw SVG content to a UTF-8 encoded data URL.
+                      const svgString = content.toString();
+                      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
+                        svgString
+                      )}`;
+                    },
                   },
                 },
               ],
-              issuer: {
-                and: [/\.(ts|tsx|js|jsx|md|mdx)$/],
-              },
             },
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
