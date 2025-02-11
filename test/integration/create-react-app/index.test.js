@@ -157,6 +157,6 @@ describe('create-react-app', () => {
     expect(exitCode).toBe(0);
 
     // Assert for the generated files
-    expectAllFiles(files, [...generatedFiles, 'tsconfig.json']);
+    expectAllFiles(files, generatedFiles);
   });
 });
