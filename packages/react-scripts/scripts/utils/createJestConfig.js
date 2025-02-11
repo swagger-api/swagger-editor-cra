@@ -49,17 +49,17 @@ module.exports = (resolve, rootDir, isEjecting) => {
       ),
     },
     transformIgnorePatterns: [
-      '[/\\\\]node_modules[/\\\\](?!vscode[/\\\\]).+\\.(js|jsx|mjs|cjs|ts|tsx)$',
+      '[/\\\\]node_modules[/\\\\](?!@codingame/monaco-vscode-api[/\\\\]).+\\.(js|jsx|mjs|cjs|ts|tsx)$',
       '^.+\\.module\\.(css|sass|scss)$',
     ],
     modulePaths: modules.additionalModulePaths || [],
     moduleNameMapper: {
       '^react-native$': 'react-native-web',
       '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
-      'vscode/vscode/vs/base/common/strings':
-        'vscode/vscode/src/vs/base/common/strings.js',
-      'vscode/vscode/vs/editor/common/diff/defaultLinesDiffComputer/defaultLinesDiffComputer':
-        'vscode/vscode/src/vs/editor/common/diff/defaultLinesDiffComputer/defaultLinesDiffComputer.js',
+      '@codingame/monaco-vscode-api/vscode/vs/base/common/strings':
+        '@codingame/monaco-vscode-api/vscode/src/vs/base/common/strings.js',
+      '@codingame/monaco-vscode-api/vscode/vs/editor/common/diff/defaultLinesDiffComputer/defaultLinesDiffComputer':
+        '@codingame/monaco-vscode-api/vscode/src/vs/editor/common/diff/defaultLinesDiffComputer/defaultLinesDiffComputer.js',
       ...(modules.jestAliases || {}),
     },
     moduleFileExtensions: [...paths.moduleFileExtensions, 'node'].filter(
