@@ -139,14 +139,14 @@ module.exports = function (webpackEnv) {
   const svgRule = config.module.rules[oneOfRuleIndex].oneOf.find(
     rule => String(rule.test) === '/\\.svg$/'
   );
+
   if (shouldProduceCompactBundle) {
     /**
      * We want all SVG files become part of the bundle.
      */
-    svgRule.type = 'asset/inline';
-    delete svgRule.use;
+    delete svgRule.oneOf.splice(0, 1);
   } else {
-    svgRule.use[1].options.name = '[name].[hash].[ext]';
+    svgRule.oneOf[0].use[1].options.name = '[name].[hash].[ext]';
   }
 
   if (shouldProduceCompactBundle) {
