@@ -144,7 +144,7 @@ module.exports = function (webpackEnv) {
     /**
      * We want all SVG files become part of the bundle.
      */
-    delete svgRule.oneOf[0];
+    delete svgRule.oneOf.splice(0, 1);
   } else {
     svgRule.oneOf[0].use[1].options.name = '[name].[hash].[ext]';
   }
