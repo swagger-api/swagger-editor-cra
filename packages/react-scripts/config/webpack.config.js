@@ -221,14 +221,12 @@ module.exports = function (webpackEnv) {
     entry: {
       main: paths.appIndexJs,
       'apidom.worker': path.join(
-        paths.appSrc,
-        'plugins',
-        'editor-monaco-language-apidom',
-        'language',
-        'apidom.worker.js'
+        paths.appPath,
+        process.env.REACT_APP_APIDOM_WORKER_PATH
       ),
-      'editor.worker': require.resolve(
-        'monaco-editor/esm/vs/editor/editor.worker.js'
+      'editor.worker': path.join(
+        paths.appPath,
+        process.env.REACT_APP_EDITOR_WORKER_PATH
       ),
     },
     externals: {
@@ -347,6 +345,7 @@ module.exports = function (webpackEnv) {
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
+        'react/jsx-runtime.js': 'react/jsx-runtime',
         // Allows for better profiling with ReactDevTools
         ...(isEnvProductionProfile && {
           'react-dom$': 'react-dom/profiling',
