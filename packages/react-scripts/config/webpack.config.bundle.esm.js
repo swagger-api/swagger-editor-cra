@@ -29,14 +29,12 @@ module.exports = function (webpackEnv) {
     ...pluginEntries,
     ...presetEntries,
     'apidom.worker': path.join(
-      paths.appSrc,
-      'plugins',
-      'editor-monaco-language-apidom',
-      'language',
-      'apidom.worker.js'
+      paths.appPath,
+      process.env.REACT_APP_APIDOM_WORKER_PATH
     ),
-    'editor.worker': require.resolve(
-      'monaco-editor/esm/vs/editor/editor.worker.js'
+    'editor.worker': path.join(
+      paths.appPath,
+      process.env.REACT_APP_EDITOR_WORKER_PATH
     ),
   };
   config.output.path = paths.appDist;

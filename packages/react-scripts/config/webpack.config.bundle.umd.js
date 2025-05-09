@@ -164,11 +164,8 @@ const apidomWorkerConfig = webpackEnv => {
 
   config.entry = {
     'apidom.worker': path.join(
-      paths.appSrc,
-      'plugins',
-      'editor-monaco-language-apidom',
-      'language',
-      'apidom.worker.js'
+      paths.appPath,
+      process.env.REACT_APP_APIDOM_WORKER_PATH
     ),
   };
 
@@ -205,8 +202,9 @@ const editorWorkerConfig = webpackEnv => {
   const config = commonConfig(webpackEnv);
 
   config.entry = {
-    'editor.worker': require.resolve(
-      'monaco-editor/esm/vs/editor/editor.worker.js'
+    'editor.worker': path.join(
+      paths.appPath,
+      process.env.REACT_APP_EDITOR_WORKER_PATH
     ),
   };
 
