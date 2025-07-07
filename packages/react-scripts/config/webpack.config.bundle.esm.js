@@ -6,12 +6,16 @@ const paths = require('./paths');
 const configFactory = require('./webpack.config');
 const nodeExternals = require('webpack-node-externals');
 
-const pluginFiles = globby.sync(['plugins/*/index.{js,ts}'], { cwd: paths.appSrc });
+const pluginFiles = globby.sync(['plugins/*/index.{js,ts}'], {
+  cwd: paths.appSrc,
+});
 const pluginEntries = pluginFiles.reduce((acc, plugin) => {
   acc[plugin.replace(/\.(js|ts)$/, '')] = path.join(paths.appSrc, plugin);
   return acc;
 }, {});
-const presetFiles = globby.sync(['presets/*/index.{js,ts}'], { cwd: paths.appSrc });
+const presetFiles = globby.sync(['presets/*/index.{js,ts}'], {
+  cwd: paths.appSrc,
+});
 const presetEntries = presetFiles.reduce((acc, preset) => {
   acc[preset.replace(/\.(js|ts)$/, '')] = path.join(paths.appSrc, preset);
   return acc;
